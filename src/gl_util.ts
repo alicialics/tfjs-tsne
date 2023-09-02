@@ -48,7 +48,7 @@ export function createVertexProgram(
 export function createAndConfigureInterpolatedTexture(
     gl: WebGLRenderingContext, width: number, height: number,
     numChannels: number, pixels?: ArrayBufferView): WebGLTexture {
-  tf.webgl.webgl_util.validateTextureSize(gl, width, height);
+  tf.webgl.webgl_util.validateTextureSize(width, height);
   const texture = tf.webgl.webgl_util.createTexture(gl);
 
   const tex2d = gl.TEXTURE_2D;
@@ -78,7 +78,7 @@ export function createAndConfigureInterpolatedTexture(
 export function createAndConfigureTexture(
     gl: WebGLRenderingContext, width: number, height: number,
     numChannels: number, pixels?: ArrayBufferView): WebGLTexture {
-  tf.webgl.webgl_util.validateTextureSize(gl, width, height);
+  tf.webgl.webgl_util.validateTextureSize(width, height);
   const texture = tf.webgl.webgl_util.createTexture(gl);
 
   const tex2d = gl.TEXTURE_2D;
@@ -107,7 +107,7 @@ export function createAndConfigureTexture(
 export function createAndConfigureUByteTexture(
     gl: WebGLRenderingContext, width: number, height: number,
     numChannels: number, pixels?: ArrayBufferView): WebGLTexture {
-  tf.webgl.webgl_util.validateTextureSize(gl, width, height);
+  tf.webgl.webgl_util.validateTextureSize(width, height);
   const texture = tf.webgl.webgl_util.createTexture(gl);
 
   const tex2d = gl.TEXTURE_2D;

@@ -30,8 +30,6 @@ export default {
       ],
   output: {
     extend: false,
-    banner:
-        `// @tensorflow/tfjs-tsne Copyright ${(new Date).getFullYear()} Google`,
     file: 'dist/tfjs-tsne.js',
     format: 'umd',
     name: 'tsne',

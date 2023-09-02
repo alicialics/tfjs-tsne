@@ -2,6 +2,8 @@
 
 This library contains a improved tSNE implementation that runs in the browser.
 
+This is a fork of (@tensorflow/tfjs-tsne)[https://github.com/tensorflow/tfjs-tsne]
+
 
 ## Installation & Usage
 
@@ -13,8 +15,8 @@ To use tfjs-tsne via script tag you need to load tfjs first. The following tags
 can be put into the head section of your html page to load the library.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.14.1"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tsne"></script>
+<script src="https://cdn.jsdelivr.net/npm/tfjs@0.15.3"></script>
+<script src="https://cdn.jsdelivr.net/npm/tfjs-tsne"></script>
 ```
 
 This library will create a `tsne` variable on the global scope.
@@ -40,17 +42,17 @@ tsneOpt.compute().then(() => {
 ### Via NPM
 
 ```
-yarn add @tensorflow/tfjs-tsne
+yarn add tfjs-tsne
 ```
 or
 ```
-npm install @tensorflow/tfjs-tsne
+npm install tfjs-tsne
 ```
 
 Then
 
 ```js
-import * as tsne from '@tensorflow/tfjs-tsne';
+import * as tsne from 'tfjs-tsne';
 
 // Create some data
 const data = tf.randomUniform([2000,10]);
