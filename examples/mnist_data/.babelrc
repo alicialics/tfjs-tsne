@@ -6,14 +6,11 @@
         "esmodules": false,
         "targets": {
           "browsers": [
-            "> 3%"
+            "defaults and supports es6-module"
           ]
         }
       }
     ]
-  ],
-  "plugins": [
-    "transform-runtime"
   ],
   "sourceMaps": "inline"
 }
