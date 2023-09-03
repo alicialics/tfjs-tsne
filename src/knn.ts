@@ -74,7 +74,7 @@ export class KNNEstimator {
       verbose = false;
     }
     // Saving the GPGPU context
-    this.backend = tf.ENV.findBackend('webgl') as tf.webgl.MathBackendWebGL;
+    this.backend = tf.findBackend('webgl') as tf.webgl.MathBackendWebGL;
     this.gpgpu = this.backend.getGPGPUContext();
 
     this._iteration = 0;
@@ -180,7 +180,7 @@ export class KNNEstimator {
     }
     this.log('knn Create static vertex start');
     this.linesVertexIdBuffer = tf.webgl.webgl_util.createStaticVertexBuffer(
-        this.gpgpu.gl, linesVertexId);
+        this.gpgpu.gl, false, linesVertexId);
     this.log('knn Create programs/buffers done');
   }
 
@@ -268,22 +268,6 @@ export class KNNEstimator {
             this.knnDataShape.numPoints, this.knnDataShape.pixelsPerPoint
           ]);
     });
-  }
-
-  /**
-   * This forces the CPU and GPU to sync (at least I think so...)
-   */
-  forceSync() {
-      // neither this.gpgpu.gl.flush() or finish() work;
-      //@ts-ignore
-      const mat0 = this.downloadTextureToMatrix(this.knnTexture0);
-      //console.log(`Flush: ${mat0.length/mat0.length}`);
-  }
-
-  private downloadTextureToMatrix(texture: WebGLTexture): Float32Array {
-      return this.gpgpu.downloadFloat32MatrixFromOutputTexture(texture,
-          this.knnDataShape.numRows,
-          this.knnDataShape.pointsPerRow * this.knnDataShape.pixelsPerPoint);
   }
 
   private iterateGPU(dataTexture: WebGLTexture, _iteration: number,

@@ -163,7 +163,7 @@ export function generateKNNClusterTexture(
   }
 
   // Generating texture
-  const backend = tf.ENV.findBackend('webgl') as tf.webgl.MathBackendWebGL;
+  const backend = tf.findBackend('webgl') as tf.webgl.MathBackendWebGL;
   if (backend === null) {
     throw Error('WebGL backend is not available');
   }
@@ -199,7 +199,7 @@ export function generateKNNLineTexture(numPoints: number, numNeighbors: number):
   }
 
   // Generating texture
-  const backend = tf.ENV.findBackend('webgl') as tf.webgl.MathBackendWebGL;
+  const backend = tf.findBackend('webgl') as tf.webgl.MathBackendWebGL;
   if (backend === null) {
     throw Error('WebGL backend is not available');
   }

@@ -112,7 +112,7 @@ export class TSNEOptimizer {
 
   // getters and settters for tSNE GD parameters
   get exaggerationAtCurrentIteration(): number {
-    return this._exaggeration.get();
+    return this._exaggeration.arraySync();
   }
   get exaggeration(): number|Array<{iteration : number, value: number}> {
     return this.rawExaggeration;
@@ -149,7 +149,7 @@ export class TSNEOptimizer {
     this.updateExaggeration();
   }
 
-  get momentum(): number { return this._momentum.get(); }
+  get momentum(): number { return this._momentum.arraySync(); }
   set momentum(mom: number) {
     if (mom < 0 || mom > 1) {
       throw Error('Momentum must be in the [0,1] range');
@@ -201,14 +201,14 @@ export class TSNEOptimizer {
       throw Error('WebGL version 1 is not supported by tfjs-tsne');
     }
     // Saving the GPGPU context
-    this.backend = tf.ENV.findBackend('webgl') as tf.webgl.MathBackendWebGL;
+    this.backend = tf.findBackend('webgl') as tf.webgl.MathBackendWebGL;
     if (this.backend === null) {
       throw Error('WebGL backend is not available');
     }
     this.gpgpu = this.backend.getGPGPUContext();
 
     // Check for the float interpolation extension
-    tf.webgl.webgl_util.getExtensionOrThrow(this.gpgpu.gl,
+    tf.webgl.webgl_util.getExtensionOrThrow(this.gpgpu.gl, false,
                                             'OES_texture_float_linear');
 
     // The points are organized as xyxyxy... with a pixel per dimension
@@ -415,7 +415,6 @@ export class TSNEOptimizer {
       tf.zeros([shape.numRows, shape.pointsPerRow * shape.pixelsPerPoint]);
 
     // Computation of the per-point probability vectors
-    this.gpgpu.enableAutomaticDebugValidation(true);
     this.log('Computing distribution params');
 
     this.computeDistributionParameters(distParamTexture, shape,
@@ -738,7 +737,7 @@ export class TSNEOptimizer {
     console.log(`Iteration: ${this._iteration} 
       Exaggeration: ${this._exaggerationNumber}
       Momentum: ${curMomentum}`);
-    return tf.tidy(() => {
+
       let gradient: tf.Tensor;
       let gain: tf.Tensor = null;
       if (this.applyGain) {
@@ -768,8 +767,8 @@ export class TSNEOptimizer {
       if (this.gain) {
         this.gain.dispose();
       }
+      await embedding.data();
       return [gradient, gain, embedding];
-    });
   }
 
   // Utility function for printing stuff
@@ -862,7 +861,7 @@ export class TSNEOptimizer {
     }
 
     this.splatVertexIdBuffer = tf.webgl.webgl_util.createStaticVertexBuffer(
-        this.gpgpu.gl, splatVertexId);
+        this.gpgpu.gl, false, splatVertexId);
 
     // Compute the interpolated value of Q (first channel)
     this.qInterpolatorProgram =

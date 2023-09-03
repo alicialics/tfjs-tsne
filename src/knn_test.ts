@@ -114,7 +114,7 @@ describe('KNN [line]\n', () => {
       vec[i * numDimensions + d] = 255. * i / numPoints;
     }
   }
-  const backend = tf.ENV.findBackend('webgl') as tf.webgl.MathBackendWebGL;
+  const backend = tf.findBackend('webgl') as tf.webgl.MathBackendWebGL;
   const gpgpu = backend.getGPGPUContext();
   const dataTexture = gl_util.createAndConfigureUByteTexture(
       gpgpu.gl, pointsPerRow * numDimensions / 4, numRows, 4, vec);
@@ -171,7 +171,7 @@ function linearTensorAccess(tensor: tf.Tensor, i: number): number {
   const elemPerRow = tensor.shape[1];
   const col = i % elemPerRow;
   const row = Math.floor(i / elemPerRow);
-  return tensor.get(row, col);
+  return (tensor.arraySync() as number[][])[row][col];
 }
 
 // Check if the returned kNN preserves the heap property

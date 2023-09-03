@@ -22,7 +22,8 @@
     "noFallthroughCasesInSwitch": true,
     "allowUnreachableCode": false,
     "experimentalDecorators": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "skipLibCheck": true
   },
   "include": [
     "src/"

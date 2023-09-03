@@ -39,7 +39,7 @@ export interface TSNEConfiguration {
  * WebGL capabilities.
  */
 export function maximumPerplexity() {
-  const backend = tf.ENV.findBackend('webgl') as tf.webgl.MathBackendWebGL;
+  const backend = tf.findBackend('webgl') as tf.webgl.MathBackendWebGL;
   if (backend === null) {
     throw Error('WebGL backend is not available');
   }
@@ -243,14 +243,8 @@ export class TSNE {
     this.probabilitiesInitialized = false;
     for (let iter = 0; iter < iterations; ++iter) {
       this.knnEstimator.iterateKNNDescent();
-      const syncCounter = 5;
       if ((this.knnEstimator.iteration % 100) === 0 && this.verbose) {
         console.log(`Iteration KNN:\t${this.knnEstimator.iteration}`);
-      }
-      if (tf.ENV.get('IS_CHROME') &&
-        this.knnEstimator.iteration % syncCounter === 0) {
-        // To ensure stability (in Chrome)
-        await this.knnEstimator.forceSync();
       }
     }
   }
