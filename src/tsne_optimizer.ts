@@ -739,37 +739,36 @@ export class TSNEOptimizer {
       Exaggeration: ${this._exaggerationNumber}
       Momentum: ${curMomentum}`);
 
-      let gradient: tf.Tensor;
-      let gain: tf.Tensor = null;
-      if (this.applyGain) {
-        //const gradFlip = gradIter.sign().notEqual(this.gradient.sign());
-        // Calculate the new gain for the point based on gradient flip
-        gain = this.gain.add(tf.scalar(0.2)).where(
-          gradIter.sign().notEqual(this.gradient.sign()),
-          this.gain.mul(tf.scalar(0.8)));
-        //@ts-ignore
-        const limitedGain = gain.where(
-          gain.greaterEqual(tf.scalar(this._minimumGain)), this.minGain);
-        // Now calculate the new gradient and update the embedding
-        this.log(`Eta: ${this._eta}`);
-        gradient =
-          this.gradient.mul(curMomentum).sub(
-            gradIter.mul(limitedGain.mul(tf.scalar(this._eta))));
-      }
-      else {
-        gradient =
-          this.gradient.mul(curMomentum).sub(
-            gradIter.mul(tf.scalar(this._eta)));
-      }
+    let gradient: tf.Tensor;
+    let gain: tf.Tensor = null;
+    if (this.applyGain) {
+      //const gradFlip = gradIter.sign().notEqual(this.gradient.sign());
+      // Calculate the new gain for the point based on gradient flip
+      gain = this.gain.add(tf.scalar(0.2)).where(
+        gradIter.sign().notEqual(this.gradient.sign()),
+        this.gain.mul(tf.scalar(0.8)));
+      //@ts-ignore
+      const limitedGain = gain.where(
+        gain.greaterEqual(tf.scalar(this._minimumGain)), this.minGain);
+      // Now calculate the new gradient and update the embedding
+      this.log(`Eta: ${this._eta}`);
+      gradient =
+        this.gradient.mul(curMomentum).sub(
+          gradIter.mul(limitedGain.mul(tf.scalar(this._eta))));
+    } else {
+      gradient =
+        this.gradient.mul(curMomentum).sub(
+          gradIter.mul(tf.scalar(this._eta)));
+    }
 
-      const embedding = this.embedding.add(gradient);
-      this.gradient.dispose();
-      this.embedding.dispose();
-      if (this.gain) {
-        this.gain.dispose();
-      }
-      await embedding.data();
-      return [gradient, gain, embedding];
+    const embedding = this.embedding.add(gradient);
+    this.gradient.dispose();
+    this.embedding.dispose();
+    if (this.gain) {
+      this.gain.dispose();
+    }
+    await embedding.data();
+    return [gradient, gain, embedding];
   }
 
   // Utility function for printing stuff

@@ -42,6 +42,16 @@ export function createVertexProgram(
   return program;
 }
 
+export function createProgram(gpgpu: webgl.GPGPUContext, fragmentShaderSource: string) {
+  try {
+    // @ts-ignore
+    return gpgpu.createProgram(fragmentShaderSource);
+  } catch (_) {
+    const fragmentShader: WebGLShader = webgl.webgl_util.createFragmentShader(gpgpu.gl, fragmentShaderSource);
+    return gpgpu.createProgram(fragmentShader);
+  }
+}
+
 ///////////////////////  GPGPU_UTIL  //////////////////////////////
 
 // Generates a textures whose access is linearly interpolated

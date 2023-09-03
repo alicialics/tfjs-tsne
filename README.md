@@ -15,7 +15,7 @@ To use tfjs-tsne via script tag you need to load tfjs first. The following tags
 can be put into the head section of your html page to load the library.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/tfjs@2.8.6"></script>
+<script src="https://cdn.jsdelivr.net/npm/tfjs@3.21.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/tfjs-tsne"></script>
 ```
 

@@ -1066,36 +1066,44 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
-"@tensorflow/tfjs-backend-cpu@2.8.6":
-  version "2.8.6"
-  resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-backend-cpu/-/tfjs-backend-cpu-2.8.6.tgz#ef60c3294a04c8c600abb4b438263c06d9b7b7bd"
-  integrity sha512-x9WTTE9p3Pon2D0d6HH1UCIJsU1w3v9sF3vxJcp+YStrjDefWoW5pwxHCckEKTRra7GWg3CwMKK3Si2dat4H1A==
+"@tensorflow/tfjs-backend-cpu@3.21.0":
+  version "3.21.0"
+  resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-backend-cpu/-/tfjs-backend-cpu-3.21.0.tgz#ee0274bf14627d08b81c4e229230da66dc9c3d92"
+  integrity sha512-88S21UAdzyK0CsLUrH17GPTD+26E85OP9CqmLZslaWjWUmBkeTQ5Zqyp6iK+gELnLxPx6q7JsNEeFuPv4254lQ==
   dependencies:
-    "@types/seedrandom" "2.4.27"
-    seedrandom "2.4.3"
+    "@types/seedrandom" "^2.4.28"
+    seedrandom "^3.0.5"
 
-"@tensorflow/tfjs-backend-webgl@^2.8.6":
-  version "2.8.6"
-  resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-backend-webgl/-/tfjs-backend-webgl-2.8.6.tgz#b88b4276a2ff4e23b05470c506b5c720bf6eb8c3"
-  integrity sha512-kPgm3Dim0Li5MleybYKSZVUCu91ipDjZtTA5RrJx/Dli115qwWdiRGOHYwsIEY61hZoE0m3amjWLUBxtwMW1Nw==
+"@tensorflow/tfjs-backend-webgl@^3.4.0":
+  version "3.21.0"
+  resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-backend-webgl/-/tfjs-backend-webgl-3.21.0.tgz#357d70c2fbd741e1d026b0788cbf5bc7c651cca3"
+  integrity sha512-N4zitIAT9IX8B8oe489qM3f3VcESxGZIZvHmVP8varOQakTvTX859aaPo1s8hK1qCy4BjSGbweooZe4U8D4kTQ==
   dependencies:
-    "@tensorflow/tfjs-backend-cpu" "2.8.6"
+    "@tensorflow/tfjs-backend-cpu" "3.21.0"
     "@types/offscreencanvas" "~2019.3.0"
-    "@types/seedrandom" "2.4.27"
+    "@types/seedrandom" "^2.4.28"
     "@types/webgl-ext" "0.0.30"
-    "@types/webgl2" "0.0.5"
-    seedrandom "2.4.3"
+    "@types/webgl2" "0.0.6"
+    seedrandom "^3.0.5"
 
-"@tensorflow/tfjs-core@^2.8.6":
-  version "2.8.6"
-  resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-core/-/tfjs-core-2.8.6.tgz#d5e9d5fc1d1a83e3fbf80942f3154300a9f82494"
-  integrity sha512-jS28M1POUOjnWgx3jp1v5D45DUQE8USsAHHkL/01z75KnYCAAmgqJSH4YKLiYACg3eBLWXH/KTcSc6dHAX7Kfg==
+"@tensorflow/tfjs-core@^3.4.0":
+  version "3.21.0"
+  resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-core/-/tfjs-core-3.21.0.tgz#379c3698afc8f66bc82f77c7e35c35910daf7e3b"
+  integrity sha512-YSfsswOqWfd+M4bXIhT3hwtAb+IV8+ODwIxwdFR/7jTAPZP1wMVnSlpKnXHAN64HFOiP+Tm3HmKusEZ0+09A0w==
   dependencies:
+    "@types/long" "^4.0.1"
     "@types/offscreencanvas" "~2019.3.0"
-    "@types/seedrandom" "2.4.27"
+    "@types/seedrandom" "^2.4.28"
     "@types/webgl-ext" "0.0.30"
+    "@webgpu/types" "0.1.16"
+    long "4.0.0"
     node-fetch "~2.6.1"
-    seedrandom "2.4.3"
+    seedrandom "^3.0.5"
+
+"@types/long@^4.0.1":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@types/long/-/long-4.0.2.tgz#b74129719fc8d11c01868010082d483b7545591a"
+  integrity sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==
 
 "@types/offscreencanvas@~2019.3.0":
   version "2019.3.0"
@@ -1107,20 +1115,25 @@
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.6.tgz#a6edffe8283910e46dc7a573621f928e6b47fa56"
   integrity sha512-IKjZ8RjTSwD4/YG+2gtj7BPFRB/lNbWKTiSj3M7U/TD2B7HfYCxvp2Zz6xA2WIY7pAuL1QOUPw8gQRbUrrq4fQ==
 
-"@types/seedrandom@2.4.27":
-  version "2.4.27"
-  resolved "https://registry.yarnpkg.com/@types/seedrandom/-/seedrandom-2.4.27.tgz#9db563937dd86915f69092bc43259d2f48578e41"
-  integrity sha512-YvMLqFak/7rt//lPBtEHv3M4sRNA+HGxrhFZ+DQs9K2IkYJbNwVIb8avtJfhDiuaUBX/AW0jnjv48FV8h3u9bQ==
+"@types/seedrandom@^2.4.28":
+  version "2.4.30"
+  resolved "https://registry.yarnpkg.com/@types/seedrandom/-/seedrandom-2.4.30.tgz#d2efe425869b84163c2d56e779dddadb9372cbfa"
+  integrity sha512-AnxLHewubLVzoF/A4qdxBGHCKifw8cY32iro3DQX9TPcetE95zBeVt3jnsvtvAUf1vwzMfwzp4t/L2yqPlnjkQ==
 
 "@types/webgl-ext@0.0.30":
   version "0.0.30"
   resolved "https://registry.yarnpkg.com/@types/webgl-ext/-/webgl-ext-0.0.30.tgz#0ce498c16a41a23d15289e0b844d945b25f0fb9d"
   integrity sha512-LKVgNmBxN0BbljJrVUwkxwRYqzsAEPcZOe6S2T6ZaBDIrFp0qu4FNlpc5sM1tGbXUYFgdVQIoeLk1Y1UoblyEg==
 
-"@types/webgl2@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@types/webgl2/-/webgl2-0.0.5.tgz#dd925e20ab8ace80eb4b1e46fda5b109c508fb0d"
-  integrity sha512-oGaKsBbxQOY5+aJFV3KECDhGaXt+yZJt2y/OZsnQGLRkH6Fvr7rv4pCt3SRH1somIHfej/c4u7NSpCyd9x+1Ow==
+"@types/webgl2@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@types/webgl2/-/webgl2-0.0.6.tgz#1ea2db791362bd8521548d664dbd3c5311cdf4b6"
+  integrity sha512-50GQhDVTq/herLMiqSQkdtRu+d5q/cWHn4VvKJtrj4DJAjo1MNkWYa2MA41BaBO1q1HgsUjuQvEOk0QHvlnAaQ==
+
+"@webgpu/types@0.1.16":
+  version "0.1.16"
+  resolved "https://registry.yarnpkg.com/@webgpu/types/-/types-0.1.16.tgz#1f05497b95b7c013facf7035c8e21784645f5cc4"
+  integrity sha512-9E61voMP4+Rze02jlTXud++Htpjyyk8vw5Hyw9FGRrmhHQg2GqbuOfwf5Klrb8vTxc2XWI3EfO7RUHMpxTj26A==
 
 abab@^2.0.0:
   version "2.0.6"
@@ -4316,6 +4329,11 @@ log-symbols@^2.2.0:
   dependencies:
     chalk "^2.0.1"
 
+long@4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/long/-/long-4.0.0.tgz#9a7b71cfb7d361a194ea555241c92f7468d5bf28"
+  integrity sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==
+
 loose-envify@^1.0.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.4.0.tgz#71ee51fa7be4caec1a63839f7e682d8132d30caf"
@@ -5714,10 +5732,10 @@ saxes@^3.1.9:
   dependencies:
     xmlchars "^2.1.1"
 
-seedrandom@2.4.3:
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/seedrandom/-/seedrandom-2.4.3.tgz#2438504dad33917314bff18ac4d794f16d6aaecc"
-  integrity sha512-2CkZ9Wn2dS4mMUWQaXLsOAfGD+irMlLEeSP3cMxpGbgyOOzJGFa+MWCOMTOCMyZinHRPxyOj/S/C57li/1to6Q==
+seedrandom@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/seedrandom/-/seedrandom-3.0.5.tgz#54edc85c95222525b0c7a6f6b3543d8e0b3aa0a7"
+  integrity sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==
 
 semver@^5.3.0, semver@^5.4.1, semver@^5.5.0:
   version "5.7.2"

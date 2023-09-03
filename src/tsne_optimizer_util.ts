@@ -255,7 +255,7 @@ export function createQInterpolatorProgram(gpgpu: webgl.GPGPUContext):
       fragColor = vec4(q, 0, 0, 1);
     }
   `;
-  return gpgpu.createProgram(fragmentShaderSource);
+  return gl_util.createProgram(gpgpu, fragmentShaderSource);
 }
 
 export function executeQInterpolatorProgram(
@@ -354,7 +354,7 @@ export function createXYInterpolatorProgram(gpgpu: webgl.GPGPUContext):
       fragColor = vec4(q,0.0,0.0,1);
     }
   `;
-  return gpgpu.createProgram(fragmentShaderSource);
+  return gl_util.createProgram(gpgpu, fragmentShaderSource);
 }
 
 export function executeXYInterpolatorProgram(
@@ -527,7 +527,7 @@ export function createAttractiveForcesComputationProgram(
       fragColor = vec4(sum_pos,dimension,0,1);
     }
   `;
-  return gpgpu.createProgram(fragmentShaderSource);
+  return gl_util.createProgram(gpgpu, fragmentShaderSource);
 }
 
 export function executeAttractiveForcesComputationProgram(
@@ -631,7 +631,7 @@ export function createEmbeddingInitializationProgram(
       }
     }
   `;
-  return gpgpu.createProgram(fragmentShaderSource);
+  return gl_util.createProgram(gpgpu, fragmentShaderSource);
 }
 
 export function executeEmbeddingInitializationProgram(
@@ -766,7 +766,7 @@ export function createDistributionParametersComputationProgram(
       fragColor = vec4(beta,sum_probabilities,0,1);
     }
   `;
-  return gpgpu.createProgram(fragmentShaderSource);
+  return gl_util.createProgram(gpgpu, fragmentShaderSource);
 }
 
 export function executeDistributionParametersComputationProgram(
@@ -863,7 +863,7 @@ export function createGaussiaDistributionsFromDistancesProgram(
       fragColor = vec4(probability,0,0,1);
     }
   `;
-  return gpgpu.createProgram(fragmentShaderSource);
+  return gl_util.createProgram(gpgpu, fragmentShaderSource);
 }
 
 export function executeGaussiaDistributionsFromDistancesProgram(

@@ -16,6 +16,7 @@
  */
 
 import * as tf from '@tensorflow/tfjs-core';
+import '@tensorflow/tfjs-core/dist/public/chained_ops/register_all_chained_ops';
 import '@tensorflow/tfjs-backend-webgl';
 import Konva from 'konva';
 const tsnejs = require('./tsne.js');

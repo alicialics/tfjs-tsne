@@ -16,6 +16,7 @@
  */
 
 import * as tf from '@tensorflow/tfjs-core';
+import '@tensorflow/tfjs-core/dist/public/chained_ops/register_all_chained_ops';
 import '@tensorflow/tfjs-backend-webgl';
 import * as tf_tsne from '../../src/index';
 import * as gl_util from "../../src/gl_util";

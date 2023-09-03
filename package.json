@@ -1,6 +1,6 @@
 {
   "name": "tfjs-tsne",
-  "version": "2.8.6",
+  "version": "3.21.0",
   "description": "TensorFlow.js powered tSNE implementation",
   "private": false,
   "main": "dist/index.js",
@@ -17,8 +17,8 @@
     "url": "git+https://github.com/alicialics/tfjs-tsne.git"
   },
   "devDependencies": {
-    "@tensorflow/tfjs-backend-webgl": "^2.8.6",
-    "@tensorflow/tfjs-core": "^2.8.6",
+    "@tensorflow/tfjs-backend-webgl": "^3.4.0",
+    "@tensorflow/tfjs-core": "^3.4.0",
     "@types/jasmine": "^2.8.6",
     "clang-format": "~1.2.2",
     "cross-env": "^5.2.0",
@@ -50,16 +50,5 @@
     "test": "karma start",
     "test-travis": "karma start --browsers='bs_firefox_mac,bs_chrome_mac' --singleRun"
   },
-  "license": "Apache-2.0",
-  "dependencies": {
-    "@tensorflow/tfjs-backend-webgl": "^2.8.6",
-    "@tensorflow/tfjs-core": "^2.8.6",
-    "buffer-hexdump": "^1.0.0",
-    "hex-view": "^1.0.0",
-    "hexdump": "^0.1.0",
-    "hexdump-js": "^0.1.0",
-    "hxd": "^1.4.2",
-    "uupaa.hexdump.js": "^0.0.5",
-    "xorshift": "^1.1.1"
-  }
+  "license": "Apache-2.0"
 }
