@@ -23,6 +23,8 @@ import {RearrangedData} from './interfaces';
 import * as knn_util from './knn_util';
 import * as tsne_util from './tsne_optimizer_util';
 
+import { GPGPUContextProgram } from "@tensorflow/tfjs-backend-webgl/dist/gpgpu_context";
+
 export class TSNEOptimizer {
   // Interactive parameters
   private _eta: number; // used as uniform in the shaders
@@ -55,13 +57,13 @@ export class TSNEOptimizer {
   private backend: webgl.MathBackendWebGL;
   private gpgpu: webgl.GPGPUContext;
 
-  private embeddingInitializationProgram: WebGLProgram;
-  private embeddingSplatterProgram: WebGLProgram;
-  private qInterpolatorProgram: WebGLProgram;
-  private xyInterpolatorProgram: WebGLProgram;
-  private attractiveForcesProgram: WebGLProgram;
-  private distributionParameterssComputationProgram: WebGLProgram;
-  private gaussiaDistributionsFromDistancesProgram: WebGLProgram;
+  private embeddingInitializationProgram: GPGPUContextProgram;
+  private embeddingSplatterProgram: GPGPUContextProgram;
+  private qInterpolatorProgram: GPGPUContextProgram;
+  private xyInterpolatorProgram: GPGPUContextProgram;
+  private attractiveForcesProgram: GPGPUContextProgram;
+  private distributionParameterssComputationProgram: GPGPUContextProgram;
+  private gaussiaDistributionsFromDistancesProgram: GPGPUContextProgram;
 
   // Repulsive forces computation
   private _splatTexture: WebGLTexture;
@@ -768,6 +770,8 @@ export class TSNEOptimizer {
       this.gain.dispose();
     }
     await embedding.data();
+    // @ts-ignore
+    this.backend.releaseGPUData(embedding.dataId);
     return [gradient, gain, embedding];
   }
 

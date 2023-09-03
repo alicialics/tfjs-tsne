@@ -16,30 +16,31 @@
  */
 
 import * as webgl from '@tensorflow/tfjs-backend-webgl';
+import { GPGPUContextProgram } from "@tensorflow/tfjs-backend-webgl/dist/gpgpu_context";
 
 //////////////////////  GPGPU_CONTEXT  /////////////////////////////
 // Method of the GPGPUContext class
 
 export function createVertexProgram(
     // TO REMOVE -> if it goes in the context it should get its own webglcontext
-    gl: WebGLRenderingContext, vertexShaderSource: string,
-    fragmentShaderSource: string): WebGLProgram {
+    gpgpu: webgl.GPGPUContext, vertexShaderSource: string,
+    fragmentShaderSource: string): GPGPUContextProgram  {
   // this.throwIfDisposed();
-  // const gl = this.gl;
+  const gl = gpgpu.gl;
 
   const vertexShader: WebGLShader =
       webgl.webgl_util.createVertexShader(gl, vertexShaderSource);
   const fragmentShader: WebGLShader =
       webgl.webgl_util.createFragmentShader(gl, fragmentShaderSource);
-  const program: WebGLProgram = webgl.webgl_util.createProgram(gl);
+  const program = webgl.webgl_util.createProgram(gl);
   webgl.webgl_util.callAndCheck(
       gl, () => gl.attachShader(program, vertexShader));
   webgl.webgl_util.callAndCheck(
       gl, () => gl.attachShader(program, fragmentShader));
   webgl.webgl_util.linkProgram(gl, program);
-  webgl.webgl_util.validateProgram(gl, program);
-
-  return program;
+  const gpgpuContextProgram = Object.assign(program, { vao: gpgpu.createVertexArray()! });
+  webgl.webgl_util.validateProgram(gl, gpgpuContextProgram);
+  return gpgpuContextProgram;
 }
 
 export function createProgram(gpgpu: webgl.GPGPUContext, fragmentShaderSource: string) {

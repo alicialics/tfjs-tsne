@@ -18,13 +18,14 @@
 import * as webgl from '@tensorflow/tfjs-backend-webgl';
 import * as gl_util from './gl_util';
 
+import { GPGPUContextProgram } from "@tensorflow/tfjs-backend-webgl/dist/gpgpu_context";
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 //@ts-ignore
 export function
-  createEmbeddingSplatterProgramOrig(gpgpu: webgl.GPGPUContext):
-    WebGLProgram {
+  createEmbeddingSplatterProgramOrig(gpgpu: webgl.GPGPUContext) {
   const vertexShaderSource = `#version 300 es
     precision highp float;
     in float vertex_id;
@@ -79,12 +80,11 @@ export function
     }
   `;
   return gl_util.createVertexProgram(
-      gpgpu.gl, vertexShaderSource, fragmentShaderSource);
+    gpgpu, vertexShaderSource, fragmentShaderSource);
 }
 
 //@ts-ignore
-export function createEmbeddingSplatterProgram(gpgpu: webgl.GPGPUContext):
-  WebGLProgram {
+export function createEmbeddingSplatterProgram(gpgpu: webgl.GPGPUContext) {
   const vertexShaderSource = `#version 300 es
     precision highp float;
     in float vertex_id;
@@ -140,11 +140,11 @@ export function createEmbeddingSplatterProgram(gpgpu: webgl.GPGPUContext):
     }
   `;
   return gl_util.createVertexProgram(
-    gpgpu.gl, vertexShaderSource, fragmentShaderSource);
+    gpgpu, vertexShaderSource, fragmentShaderSource);
 }
 
 export function executeEmbeddingSplatterProgram(
-    gpgpu: webgl.GPGPUContext, program: WebGLProgram,
+    gpgpu: webgl.GPGPUContext, program: GPGPUContextProgram,
     targetTex: WebGLTexture, embeddingTex: WebGLTexture,
     kernelTex: WebGLTexture, targetTexWidth: number, targetTexHeight:
     number, numPoints: number,
@@ -152,7 +152,7 @@ export function executeEmbeddingSplatterProgram(
     kernelSupport: number, pntsPerRow: number, numRows: number,
     vertexIdBuffer: WebGLBuffer) {
   const gl = gpgpu.gl;
-  const oldProgram: WebGLProgram = gpgpu.program;
+  const oldProgram: GPGPUContextProgram = gpgpu.program;
 
   if (targetTex != null) {
     gpgpu.setOutputMatrixTexture(
@@ -216,8 +216,7 @@ export function executeEmbeddingSplatterProgram(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-export function createQInterpolatorProgram(gpgpu: webgl.GPGPUContext):
-    WebGLProgram {
+export function createQInterpolatorProgram(gpgpu: webgl.GPGPUContext) {
   const fragmentShaderSource = `#version 300 es
     precision highp float;
     uniform sampler2D embedding_tex;
@@ -259,7 +258,7 @@ export function createQInterpolatorProgram(gpgpu: webgl.GPGPUContext):
 }
 
 export function executeQInterpolatorProgram(
-    gpgpu: webgl.GPGPUContext, program: WebGLProgram, splatTex: WebGLTexture,
+    gpgpu: webgl.GPGPUContext, program: GPGPUContextProgram, splatTex: WebGLTexture,
     embeddingTex: WebGLTexture, numPoints: number, minX: number, minY: number,
     maxX: number, maxY: number, pntsPerRow: number, numRows: number,
     targetTex?: WebGLTexture) {
@@ -307,8 +306,7 @@ export function executeQInterpolatorProgram(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-export function createXYInterpolatorProgram(gpgpu: webgl.GPGPUContext):
-    WebGLProgram {
+export function createXYInterpolatorProgram(gpgpu: webgl.GPGPUContext) {
   const fragmentShaderSource = `#version 300 es
     precision highp float;
     uniform sampler2D embedding_tex;
@@ -358,7 +356,7 @@ export function createXYInterpolatorProgram(gpgpu: webgl.GPGPUContext):
 }
 
 export function executeXYInterpolatorProgram(
-    gpgpu: webgl.GPGPUContext, program: WebGLProgram, splatTex: WebGLTexture,
+    gpgpu: webgl.GPGPUContext, program: GPGPUContextProgram, splatTex: WebGLTexture,
     embeddingTex: WebGLTexture, targetTex: WebGLTexture, numPoints: number,
     minX: number, minY: number, maxX: number, maxY: number, pntsPerRow: number,
     numRows: number, eta: number) {
@@ -407,7 +405,7 @@ export function executeXYInterpolatorProgram(
 ///////////////////////////////////////////////////////////
 
 export function createAttractiveForcesComputationProgram(
-    gpgpu: webgl.GPGPUContext): WebGLProgram {
+    gpgpu: webgl.GPGPUContext) {
   const fragmentShaderSource = `#version 300 es
     precision highp float;
 
@@ -531,7 +529,7 @@ export function createAttractiveForcesComputationProgram(
 }
 
 export function executeAttractiveForcesComputationProgram(
-    gpgpu: webgl.GPGPUContext, program: WebGLProgram,
+    gpgpu: webgl.GPGPUContext, program: GPGPUContextProgram,
     embeddingTex: WebGLTexture, offsetTex: WebGLTexture,
     neighIdTex: WebGLTexture,  // Float for now...
     // better to use an integer texture
@@ -588,7 +586,7 @@ export function executeAttractiveForcesComputationProgram(
 ///////////////////////////////////////////////////////////
 
 export function createEmbeddingInitializationProgram(
-    gpgpu: webgl.GPGPUContext): WebGLProgram {
+    gpgpu: webgl.GPGPUContext) {
   const fragmentShaderSource = `#version 300 es
     precision highp float;
 
@@ -635,7 +633,7 @@ export function createEmbeddingInitializationProgram(
 }
 
 export function executeEmbeddingInitializationProgram(
-    gpgpu: webgl.GPGPUContext, program: WebGLProgram,
+    gpgpu: webgl.GPGPUContext, program: GPGPUContextProgram,
     randomTex: WebGLTexture, numPoints: number, pntsPerRow: number,
     numRows: number, targetTex?: WebGLTexture) {
   const gl = gpgpu.gl;
@@ -670,7 +668,7 @@ export function executeEmbeddingInitializationProgram(
 ///////////////////////////////////////////////////////////
 
 export function createDistributionParametersComputationProgram(
-    gpgpu: webgl.GPGPUContext): WebGLProgram {
+    gpgpu: webgl.GPGPUContext) {
   const fragmentShaderSource = `#version 300 es
     precision highp float;
 
@@ -770,7 +768,7 @@ export function createDistributionParametersComputationProgram(
 }
 
 export function executeDistributionParametersComputationProgram(
-    gpgpu: webgl.GPGPUContext, program: WebGLProgram, knnGraph: WebGLTexture,
+    gpgpu: webgl.GPGPUContext, program: GPGPUContextProgram, knnGraph: WebGLTexture,
     numPoints: number, numNeighs: number, pntsPerRow: number, numRows: number,
     perplexity: number, targetTex?: WebGLTexture) {
   const gl = gpgpu.gl;
@@ -819,7 +817,7 @@ export function executeDistributionParametersComputationProgram(
 ///////////////////////////////////////////////////////////
 
 export function createGaussiaDistributionsFromDistancesProgram(
-    gpgpu: webgl.GPGPUContext): WebGLProgram {
+    gpgpu: webgl.GPGPUContext) {
   const fragmentShaderSource = `#version 300 es
     precision highp float;
     uniform sampler2D knn_graph_tex;
@@ -867,7 +865,7 @@ export function createGaussiaDistributionsFromDistancesProgram(
 }
 
 export function executeGaussiaDistributionsFromDistancesProgram(
-    gpgpu: webgl.GPGPUContext, program: WebGLProgram, knnGraph: WebGLTexture,
+    gpgpu: webgl.GPGPUContext, program: GPGPUContextProgram, knnGraph: WebGLTexture,
     parameters: WebGLTexture, numPoints: number, numNeighs: number,
     pntsPerRow: number, numRows: number, targetTex?: WebGLTexture) {
   const gl = gpgpu.gl;

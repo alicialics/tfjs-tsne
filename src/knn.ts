@@ -24,6 +24,8 @@ import * as gl_util from './gl_util';
 import {RearrangedData} from './interfaces';
 import * as knn_util from './knn_util';
 
+import { GPGPUContextProgram } from "@tensorflow/tfjs-backend-webgl/dist/gpgpu_context";
+
 // tslint:disable-next-line:no-any
 function instanceOfRearrangedData(object: any): object is RearrangedData {
   return 'numPoints' in object && 'pointsPerRow' in object &&
@@ -48,11 +50,11 @@ export class KNNEstimator {
   private _iteration: number;
   private numNeighs: number;
 
-  private bruteForceKNNProgram: WebGLProgram;
-  private randomSamplingKNNProgram: WebGLProgram;
-  private kNNDescentProgram: WebGLProgram;
-  private copyDistancesProgram: WebGLProgram;
-  private copyIndicesProgram: WebGLProgram;
+  private bruteForceKNNProgram: GPGPUContextProgram;
+  private randomSamplingKNNProgram: GPGPUContextProgram;
+  private kNNDescentProgram: GPGPUContextProgram;
+  private copyDistancesProgram: GPGPUContextProgram;
+  private copyIndicesProgram: GPGPUContextProgram;
 
   private linesVertexIdBuffer: WebGLBuffer;
 

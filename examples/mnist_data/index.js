@@ -293,7 +293,7 @@ function executeTextureDisplayProgram(
  * to two separate render targets
  * @param gpgpu
  * @param numLabels
- * @returns {WebGLProgram}
+ * @returns {GPGPUContextProgram}
  */
 function createPointsToTexturesProgram(gl) {
   const vertexShaderSource = `#version 300 es

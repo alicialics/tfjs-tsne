@@ -18,6 +18,8 @@
 import * as webgl from '@tensorflow/tfjs-backend-webgl';
 import * as gl_util from './gl_util';
 
+import { GPGPUContextProgram } from "@tensorflow/tfjs-backend-webgl/dist/gpgpu_context";
+
 export interface RearrangedData {
   numPoints: number;
   pointsPerRow: number;
@@ -266,7 +268,7 @@ const vertexPositionSource = `
 
 export function createBruteForceKNNProgram(
     gpgpu: webgl.GPGPUContext, numNeighbors: number,
-    distanceComputationSource: string): WebGLProgram {
+    distanceComputationSource: string) {
   const vertexShaderSource = `#version 300 es
     ` +
       generateVariablesAndDeclarationsSource(numNeighbors) +
@@ -317,7 +319,7 @@ export function createBruteForceKNNProgram(
       generateFragmentShaderSource(distanceComputationSource, numNeighbors);
 
   return gl_util.createVertexProgram(
-      gpgpu.gl, vertexShaderSource, knnFragmentShaderSource);
+      gpgpu, vertexShaderSource, knnFragmentShaderSource);
 }
 
 ///////////////////////////////////////////////////////////
@@ -326,7 +328,7 @@ export function createBruteForceKNNProgram(
 
 export function createRandomSamplingKNNProgram(
     gpgpu: webgl.GPGPUContext, numNeighbors: number,
-    distanceComputationSource: string): WebGLProgram {
+    distanceComputationSource: string) {
   const vertexShaderSource = `#version 300 es
     ` +
       generateVariablesAndDeclarationsSource(numNeighbors) +
@@ -382,7 +384,7 @@ export function createRandomSamplingKNNProgram(
       generateFragmentShaderSource(distanceComputationSource, numNeighbors);
 
   return gl_util.createVertexProgram(
-      gpgpu.gl, vertexShaderSource, knnFragmentShaderSource);
+      gpgpu, vertexShaderSource, knnFragmentShaderSource);
 }
 
 ///////////////////////////////////////////////////////////
@@ -391,7 +393,7 @@ export function createRandomSamplingKNNProgram(
 
 export function createKNNDescentProgram(
     gpgpu: webgl.GPGPUContext, numNeighbors: number,
-    distanceComputationSource: string): WebGLProgram {
+    distanceComputationSource: string) {
   const vertexShaderSource = `#version 300 es
     ` +
       generateVariablesAndDeclarationsSource(numNeighbors) +
@@ -485,7 +487,7 @@ export function createKNNDescentProgram(
       generateFragmentShaderSource(distanceComputationSource, numNeighbors);
 
   return gl_util.createVertexProgram(
-      gpgpu.gl, vertexShaderSource, knnFragmentShaderSource);
+      gpgpu, vertexShaderSource, knnFragmentShaderSource);
 }
 
 ///////////////////////////////////////////////////////////
@@ -499,11 +501,11 @@ export interface RearrangedData {
   numRows: number;
 }
 export function executeKNNProgram(
-    gpgpu: webgl.GPGPUContext, program: WebGLProgram, dataTex: WebGLTexture,
+    gpgpu: webgl.GPGPUContext, program: GPGPUContextProgram, dataTex: WebGLTexture,
     startingKNNTex: WebGLTexture, iteration: number, knnShape: RearrangedData,
     vertexIdBuffer: WebGLBuffer, targetTex?: WebGLTexture) {
   const gl = gpgpu.gl;
-  const oldProgram: WebGLProgram = gpgpu.program;
+  const oldProgram = gpgpu.program;
   const oldLineWidth: number = gl.getParameter(gl.LINE_WIDTH);
 
   if (targetTex != null) {
@@ -571,8 +573,7 @@ export function executeKNNProgram(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-export function createCopyDistancesProgram(gpgpu: webgl.GPGPUContext):
-    WebGLProgram {
+export function createCopyDistancesProgram(gpgpu: webgl.GPGPUContext) {
   const fragmentShaderSource = `#version 300 es
     precision highp float;
     uniform sampler2D knn_tex;
@@ -590,7 +591,7 @@ export function createCopyDistancesProgram(gpgpu: webgl.GPGPUContext):
 }
 
 export function executeCopyDistancesProgram(
-    gpgpu: webgl.GPGPUContext, program: WebGLProgram, knnTex: WebGLTexture,
+    gpgpu: webgl.GPGPUContext, program: GPGPUContextProgram, knnTex: WebGLTexture,
     knnShape: RearrangedData, targetTex?: WebGLTexture) {
   const gl = gpgpu.gl;
   if (targetTex != null) {
@@ -621,8 +622,7 @@ export function executeCopyDistancesProgram(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-export function createCopyIndicesProgram(gpgpu: webgl.GPGPUContext):
-    WebGLProgram {
+export function createCopyIndicesProgram(gpgpu: webgl.GPGPUContext) {
   const fragmentShaderSource = `#version 300 es
     precision highp float;
     uniform sampler2D knn_tex;
@@ -644,7 +644,7 @@ export function createCopyIndicesProgram(gpgpu: webgl.GPGPUContext):
 }
 
 export function executeCopyIndicesProgram(
-    gpgpu: webgl.GPGPUContext, program: WebGLProgram, knnTex: WebGLTexture,
+    gpgpu: webgl.GPGPUContext, program: GPGPUContextProgram, knnTex: WebGLTexture,
     knnShape: RearrangedData, targetTex?: WebGLTexture) {
   const gl = gpgpu.gl;
   if (targetTex != null) {
