@@ -16,6 +16,7 @@
  */
 
 import * as tf from '@tensorflow/tfjs-core';
+import '@tensorflow/tfjs-core/dist/public/chained_ops/register_all_chained_ops';
 import * as webgl from '@tensorflow/tfjs-backend-webgl';
 
 import * as dataset_util from './dataset_util';

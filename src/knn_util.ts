@@ -586,7 +586,7 @@ export function createCopyDistancesProgram(gpgpu: webgl.GPGPUContext):
       fragColor = vec4(distance,0,0,1);
     }
   `;
-  return gpgpu.createProgram(fragmentShaderSource);
+  return gl_util.createProgram(gpgpu, fragmentShaderSource);
 }
 
 export function executeCopyDistancesProgram(
@@ -640,7 +640,7 @@ export function createCopyIndicesProgram(gpgpu: webgl.GPGPUContext):
       }
     }
   `;
-  return gpgpu.createProgram(fragmentShaderSource);
+  return gl_util.createProgram(gpgpu, fragmentShaderSource);
 }
 
 export function executeCopyIndicesProgram(
