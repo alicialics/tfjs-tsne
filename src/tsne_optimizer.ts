@@ -16,6 +16,7 @@
  */
 
 import * as tf from '@tensorflow/tfjs-core';
+import * as webgl from '@tensorflow/tfjs-backend-webgl';
 
 import * as gl_util from './gl_util';
 import {RearrangedData} from './interfaces';
@@ -51,8 +52,8 @@ export class TSNEOptimizer {
   private gradient: tf.Tensor;
   private gain: tf.Tensor;
   private minGain: tf.Tensor;
-  private backend: tf.webgl.MathBackendWebGL;
-  private gpgpu: tf.webgl.GPGPUContext;
+  private backend: webgl.MathBackendWebGL;
+  private gpgpu: webgl.GPGPUContext;
 
   private embeddingInitializationProgram: WebGLProgram;
   private embeddingSplatterProgram: WebGLProgram;
@@ -201,14 +202,14 @@ export class TSNEOptimizer {
       throw Error('WebGL version 1 is not supported by tfjs-tsne');
     }
     // Saving the GPGPU context
-    this.backend = tf.findBackend('webgl') as tf.webgl.MathBackendWebGL;
+    this.backend = tf.findBackend('webgl') as webgl.MathBackendWebGL;
     if (this.backend === null) {
       throw Error('WebGL backend is not available');
     }
     this.gpgpu = this.backend.getGPGPUContext();
 
     // Check for the float interpolation extension
-    tf.webgl.webgl_util.getExtensionOrThrow(this.gpgpu.gl, false,
+    webgl.webgl_util.getExtensionOrThrow(this.gpgpu.gl,
                                             'OES_texture_float_linear');
 
     // The points are organized as xyxyxy... with a pixel per dimension
@@ -420,7 +421,7 @@ export class TSNEOptimizer {
     this.computeDistributionParameters(distParamTexture, shape,
       perplexity, knnGraph);
 
-    console.log(`Perplexity: ${perplexity}`);
+    this.log(`Perplexity: ${perplexity}`);
     //this.logDistributionParamsTexture(
     //  distParamTexture,
     //  shape.pointsPerRow,
@@ -643,13 +644,13 @@ export class TSNEOptimizer {
   private async logForces(attr:tf.Tensor, rep:tf.Tensor) {
     const attrData = await attr.data();
     const repData = await rep.data();
-    console.log('Repulsive forces');
+    this.log('Repulsive forces');
     for (let i = 0; i < repData.length; i++) {
-      console.log(`R${i}:${repData[i]}`);
+      this.log(`R${i}:${repData[i]}`);
     }
-    console.log('Attractive forces');
+    this.log('Attractive forces');
     for (let i = 0; i < attrData.length; i++) {
-      console.log(`A${i}:${attrData[i]}`);
+      this.log(`A${i}:${attrData[i]}`);
     }
   }
 
@@ -734,7 +735,7 @@ export class TSNEOptimizer {
     const curMomentum = (iterCount < this._momSwitchIter) ?
       this._momentum : this._finalMomentum;
     // find points with flipped gradient
-    console.log(`Iteration: ${this._iteration} 
+    this.log(`Iteration: ${this._iteration} 
       Exaggeration: ${this._exaggerationNumber}
       Momentum: ${curMomentum}`);
 
@@ -860,8 +861,8 @@ export class TSNEOptimizer {
       }
     }
 
-    this.splatVertexIdBuffer = tf.webgl.webgl_util.createStaticVertexBuffer(
-        this.gpgpu.gl, false, splatVertexId);
+    this.splatVertexIdBuffer = webgl.webgl_util.createStaticVertexBuffer(
+        this.gpgpu.gl, splatVertexId);
 
     // Compute the interpolated value of Q (first channel)
     this.qInterpolatorProgram =

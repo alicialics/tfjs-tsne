@@ -16,6 +16,7 @@
  */
 
 import * as tf from '@tensorflow/tfjs-core';
+import * as webgl from '@tensorflow/tfjs-backend-webgl';
 
 import * as gl_util from './gl_util';
 import {RearrangedData} from './interfaces';
@@ -114,7 +115,7 @@ describe('KNN [line]\n', () => {
       vec[i * numDimensions + d] = 255. * i / numPoints;
     }
   }
-  const backend = tf.findBackend('webgl') as tf.webgl.MathBackendWebGL;
+  const backend = tf.findBackend('webgl') as webgl.MathBackendWebGL;
   const gpgpu = backend.getGPGPUContext();
   const dataTexture = gl_util.createAndConfigureUByteTexture(
       gpgpu.gl, pointsPerRow * numDimensions / 4, numRows, 4, vec);

@@ -16,6 +16,7 @@
  */
 
 import * as tf from '@tensorflow/tfjs-core';
+import * as webgl from '@tensorflow/tfjs-backend-webgl';
 
 import {RearrangedData} from './interfaces';
 import {KNNEstimator} from './knn';
@@ -39,7 +40,7 @@ export interface TSNEConfiguration {
  * WebGL capabilities.
  */
 export function maximumPerplexity() {
-  const backend = tf.findBackend('webgl') as tf.webgl.MathBackendWebGL;
+  const backend = tf.findBackend('webgl') as webgl.MathBackendWebGL;
   if (backend === null) {
     throw Error('WebGL backend is not available');
   }

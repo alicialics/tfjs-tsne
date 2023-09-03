@@ -22,6 +22,6 @@ yarn
 yarn build
 rollup -c
 
-uglifyjs dist/tfjs-tsne.js -c -m -o dist/tfjs-tsne.min.js
+terser dist/tfjs-tsne.js -c -m -o dist/tfjs-tsne.min.js
 
 echo "Stored standalone library at dist/tfjs-tsne(.min).js"

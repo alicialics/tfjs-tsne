@@ -16,6 +16,7 @@
  */
 
 import * as tf from '@tensorflow/tfjs-core';
+import '@tensorflow/tfjs-backend-webgl';
 import * as tf_tsne from '../../src/index';
 import * as gl_util from "../../src/gl_util";
 
@@ -38,7 +39,7 @@ function getUniformLocations(gl, program, locationArray) {
   let locationTable = {};
   for (const locName of locationArray) {
     locationTable[locName] = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, locName);
+      gl, program, locName);
   }
   return locationTable;
 }
@@ -107,7 +108,7 @@ function executeRenderTextureToScreenQuad(
   gpgpu.setProgram(program);
 
   tf.webgl.webgl_util.callAndCheck(
-    gl, false, () => gl.bindFramebuffer(gl.FRAMEBUFFER, null));
+    gl, () => gl.bindFramebuffer(gl.FRAMEBUFFER, null));
 
   // clear the target with a light grey and blend the render
   gl.enable(gl.SCISSOR_TEST);
@@ -129,15 +130,15 @@ function executeRenderTextureToScreenQuad(
   ]);
 
   const vertexCoordsBuffer = tf.webgl.webgl_util.createStaticVertexBuffer(
-    gl, false, vertexCoords);
+    gl, vertexCoords);
 
   const FSIZE = vertexCoords.BYTES_PER_ELEMENT;
   // position offset = 0
   tf.webgl.webgl_util.bindVertexBufferToProgramAttribute(
-    gl, false, program, 'a_Position', vertexCoordsBuffer, 2, FSIZE * 4, 0);
+    gl, program, 'a_Position', vertexCoordsBuffer, 2, FSIZE * 4, 0);
   // tex coord offset = FSIZE * 2
   tf.webgl.webgl_util.bindVertexBufferToProgramAttribute(
-    gl, false, program, 'a_TexCoord', vertexCoordsBuffer, 2, FSIZE * 4, FSIZE * 2);
+    gl, program, 'a_TexCoord', vertexCoordsBuffer, 2, FSIZE * 4, FSIZE * 2);
 
   gpgpu.setInputMatrixTexture(texture, uniforms.u_Sampler, 0);
   gl.clear(gl.COLOR_BUFFER_BIT);
@@ -234,7 +235,7 @@ function executeTextureDisplayProgram(
 
   // this is the backend canvas - clear the display window
   tf.webgl.webgl_util.callAndCheck(
-    gl, false, () => gl.bindFramebuffer(gl.FRAMEBUFFER, null));
+    gl, () => gl.bindFramebuffer(gl.FRAMEBUFFER, null));
   gl.enable(gl.SCISSOR_TEST);
   gl.enable(gl.DEPTH_TEST);
   gl.scissor(left, bottom, width, height);
@@ -255,9 +256,9 @@ function executeTextureDisplayProgram(
     -1, 1]);
 
   // create and load buffers for the geometry vertices and indices
-  const quad_buffer = tf.webgl.webgl_util.createStaticVertexBuffer(gl, false, quadVertices);
+  const quad_buffer = tf.webgl.webgl_util.createStaticVertexBuffer(gl, quadVertices);
   tf.webgl.webgl_util.bindVertexBufferToProgramAttribute(
-    gl, false, program, 'a_position', quad_buffer, 2, 0, 0);
+    gl, program, 'a_position', quad_buffer, 2, 0, 0);
 
   const texCoord = new Float32Array([
     0, 0,
@@ -266,9 +267,9 @@ function executeTextureDisplayProgram(
     0, 0,
     1, 1,
     0, 1]);
-  const texc_buff = tf.webgl.webgl_util.createStaticVertexBuffer(gl, false, texCoord);
+  const texc_buff = tf.webgl.webgl_util.createStaticVertexBuffer(gl, texCoord);
   tf.webgl.webgl_util.bindVertexBufferToProgramAttribute(
-    gl, false, program, 'a_texcoord', texc_buff, 2, 0, 0);
+    gl, program, 'a_texcoord', texc_buff, 2, 0, 0);
 
   gpgpu.setInputMatrixTexture(texture, uniforms.u_image, 0);
   gl.uniform1i(uniforms.comp_idx, index);
@@ -361,24 +362,24 @@ function createPointsToTexturesProgram(gl) {
  * @returns {WebGLTexture}
  */
 function createAndConfigureUint32Texture(gl, width, height, pixels) {
-  const texture = tf.webgl.webgl_util.createTexture(gl, false);
+  const texture = tf.webgl.webgl_util.createTexture(gl);
   // begin texture ops
   tf.webgl.webgl_util.callAndCheck(
-    gl, false, () => gl.bindTexture(gl.TEXTURE_2D, texture));
+    gl, () => gl.bindTexture(gl.TEXTURE_2D, texture));
   tf.webgl.webgl_util.callAndCheck(
-    gl, false, () => gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE));
+    gl, () => gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE));
   tf.webgl.webgl_util.callAndCheck(
-    gl, false, () => gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE));
+    gl, () => gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE));
   tf.webgl.webgl_util.callAndCheck(
-    gl, false, () => gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST));
+    gl, () => gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST));
   tf.webgl.webgl_util.callAndCheck(
-    gl, false, () => gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST));
+    gl, () => gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST));
   tf.webgl.webgl_util.callAndCheck(
-    gl, false, () => gl.texImage2D(gl.TEXTURE_2D, 0, gl.R32UI, width, height,
+    gl, () => gl.texImage2D(gl.TEXTURE_2D, 0, gl.R32UI, width, height,
                             0, gl.RED_INTEGER, gl.UNSIGNED_INT, pixels));
   // end texture ops
   tf.webgl.webgl_util.callAndCheck(
-    gl, false, () => gl.bindTexture(gl.TEXTURE_2D, null));
+    gl, () => gl.bindTexture(gl.TEXTURE_2D, null));
   return texture;
 }
 
@@ -395,14 +396,14 @@ function initOffscreenState(gl, width, height) {
   if (plot_tex === null) {
     plot_tex = gl_util.createAndConfigureTexture(gl, width, height, 4);
     tf.webgl.webgl_util.callAndCheck(
-      gl, false, () => gl.framebufferTexture2D(
+      gl, () => gl.framebufferTexture2D(
         gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, plot_tex, 0));
   }
 
   if (hit_texture === null) {
     hit_texture = createAndConfigureUint32Texture(gl, width, height);
     tf.webgl.webgl_util.callAndCheck(
-      gl, false, () => gl.framebufferTexture2D(
+      gl, () => gl.framebufferTexture2D(
         gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + 1, gl.TEXTURE_2D, hit_texture, 0));
   }
 }
@@ -464,10 +465,10 @@ function executeOffscreenPointRender(
   gl.viewport(0, 0, width, height);
 
   tf.webgl.webgl_util.bindVertexBufferToProgramAttribute(
-    gl, false, program, 'vertex_id', vertexIdBuffer, 1, 0, 0);
+    gl, program, 'vertex_id', vertexIdBuffer, 1, 0, 0);
 
   tf.webgl.webgl_util.bindVertexBufferToProgramAttribute(
-    gl, false, program, 'label_color', labelColorBuffer, 3, 0, 0);
+    gl, program, 'label_color', labelColorBuffer, 3, 0, 0);
 
   gpgpu.setInputMatrixTexture(pointTex, uniforms.point_tex, 0);
 
@@ -477,12 +478,12 @@ function executeOffscreenPointRender(
 
   gl.uniform2f(uniforms.maxV, maxX, maxY);
   tf.webgl.webgl_util.callAndCheck(
-     gl, false, () => gl.drawArrays(gl.POINTS, 0, numPoints));
+     gl, () => gl.drawArrays(gl.POINTS, 0, numPoints));
   gl.disable(gl.BLEND);
 }
 
 function clearBackground(gl) {
-  tf.webgl.webgl_util.bindCanvasToFramebuffer(gl, false);
+  tf.webgl.webgl_util.bindCanvasToFramebuffer(gl);
   gl.enable(gl.DEPTH_TEST);
   gl.disable(gl.SCISSOR_TEST);
   gl.clearColor(1.0, 1.0, 1.0, 1.0);
@@ -505,11 +506,11 @@ function initBuffers(numPoints, colors) {
 
   vertexId = new Float32Array([...Array(numPoints).keys()]);
   vertexIdBuffer =
-    tf.webgl.webgl_util.createStaticVertexBuffer(gl, false, vertexId);
+    tf.webgl.webgl_util.createStaticVertexBuffer(gl, vertexId);
 
   labelColor = colors;
   labelColorBuffer =
-    tf.webgl.webgl_util.createStaticVertexBuffer(gl, false, labelColor);
+    tf.webgl.webgl_util.createStaticVertexBuffer(gl, labelColor);
 }
 
 let pointToTexProgram;
@@ -693,7 +694,7 @@ let maxSize = 0;
 
 function clearBackendCanvas() {
   let gl = backend.getGPGPUContext().gl;
-  tf.webgl.webgl_util.bindCanvasToFramebuffer(gl, false);
+  tf.webgl.webgl_util.bindCanvasToFramebuffer(gl);
   gl.clearColor(1, 1, 1, 1);
   gl.clear(gl.COLOR_BUFFER_BIT);
 }
@@ -842,7 +843,7 @@ function displayScatterPlot(now) {
   if (oldProgram != null) {
     gpgpu.setProgram(oldProgram);
     tf.webgl.gpgpu_util.bindVertexProgramAttributeStreams(
-      gl, false, oldProgram, gpgpu.vertexBuffer);
+      gl, oldProgram, gpgpu.vertexBuffer);
   }
 };
 

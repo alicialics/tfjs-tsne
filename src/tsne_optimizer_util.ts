@@ -15,7 +15,7 @@
  * =============================================================================
  */
 
-import * as tf from '@tensorflow/tfjs-core';
+import * as webgl from '@tensorflow/tfjs-backend-webgl';
 import * as gl_util from './gl_util';
 
 ///////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@ import * as gl_util from './gl_util';
 
 //@ts-ignore
 export function
-  createEmbeddingSplatterProgramOrig(gpgpu: tf.webgl.GPGPUContext):
+  createEmbeddingSplatterProgramOrig(gpgpu: webgl.GPGPUContext):
     WebGLProgram {
   const vertexShaderSource = `#version 300 es
     precision highp float;
@@ -83,7 +83,7 @@ export function
 }
 
 //@ts-ignore
-export function createEmbeddingSplatterProgram(gpgpu: tf.webgl.GPGPUContext):
+export function createEmbeddingSplatterProgram(gpgpu: webgl.GPGPUContext):
   WebGLProgram {
   const vertexShaderSource = `#version 300 es
     precision highp float;
@@ -144,7 +144,7 @@ export function createEmbeddingSplatterProgram(gpgpu: tf.webgl.GPGPUContext):
 }
 
 export function executeEmbeddingSplatterProgram(
-    gpgpu: tf.webgl.GPGPUContext, program: WebGLProgram,
+    gpgpu: webgl.GPGPUContext, program: WebGLProgram,
     targetTex: WebGLTexture, embeddingTex: WebGLTexture,
     kernelTex: WebGLTexture, targetTexWidth: number, targetTexHeight:
     number, numPoints: number,
@@ -158,7 +158,7 @@ export function executeEmbeddingSplatterProgram(
     gpgpu.setOutputMatrixTexture(
         targetTex, targetTexWidth, targetTexHeight);
   } else {
-    tf.webgl.webgl_util.bindCanvasToFramebuffer(gpgpu.gl, false);
+    webgl.webgl_util.bindCanvasToFramebuffer(gpgpu.gl);
   }
 
   gpgpu.setProgram(program);
@@ -168,39 +168,39 @@ export function executeEmbeddingSplatterProgram(
   gl.enable(gl.BLEND);
   gl.blendFunc(gl.ONE, gl.ONE);
 
-  tf.webgl.webgl_util.callAndCheck(
-      gl, false, () => gl.bindBuffer(gl.ARRAY_BUFFER, vertexIdBuffer));
+  webgl.webgl_util.callAndCheck(
+      gl, () => gl.bindBuffer(gl.ARRAY_BUFFER, vertexIdBuffer));
 
-  tf.webgl.webgl_util.bindVertexBufferToProgramAttribute(
-      gl, false, program, 'vertex_id', vertexIdBuffer, 1, 0, 0);
+  webgl.webgl_util.bindVertexBufferToProgramAttribute(
+      gl, program, 'vertex_id', vertexIdBuffer, 1, 0, 0);
 
   const embeddingLocation =
-      tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-          gl, false, program, 'embedding_tex');
+      webgl.webgl_util.getProgramUniformLocationOrThrow(
+          gl, program, 'embedding_tex');
   gpgpu.setInputMatrixTexture(embeddingTex, embeddingLocation, 0);
 
-  const kernelLocation = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'kernel_tex');
+  const kernelLocation = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'kernel_tex');
   gpgpu.setInputMatrixTexture(kernelTex, kernelLocation, 1);
 
-  const kernelSupportLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'kernel_support');
+  const kernelSupportLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'kernel_support');
   gl.uniform1f(kernelSupportLoc, kernelSupport);
 
-  const pntsPerRowLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'points_per_row');
+  const pntsPerRowLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'points_per_row');
   gl.uniform1f(pntsPerRowLoc, pntsPerRow);
 
   const minLoc =
-      tf.webgl.webgl_util.getProgramUniformLocationOrThrow(gl, false, program, 'minV');
+      webgl.webgl_util.getProgramUniformLocationOrThrow(gl, program, 'minV');
   gl.uniform2f(minLoc, minX, minY);
 
   const maxLoc =
-      tf.webgl.webgl_util.getProgramUniformLocationOrThrow(gl, false, program, 'maxV');
+      webgl.webgl_util.getProgramUniformLocationOrThrow(gl, program, 'maxV');
   gl.uniform2f(maxLoc, maxX, maxY);
 
-  tf.webgl.webgl_util.callAndCheck(
-      gl, false, () => gl.drawArrays(gl.TRIANGLES, 0, numPoints * 2 * 3));
+  webgl.webgl_util.callAndCheck(
+      gl, () => gl.drawArrays(gl.TRIANGLES, 0, numPoints * 2 * 3));
 
   gl.disable(gl.BLEND);
 
@@ -208,15 +208,15 @@ export function executeEmbeddingSplatterProgram(
   // TOCHECK if it can be improved
   if (oldProgram != null) {
     gpgpu.setProgram(oldProgram);
-    tf.webgl.gpgpu_util.bindVertexProgramAttributeStreams(
-        gpgpu.gl, false, oldProgram, gpgpu.vertexBuffer);
+    webgl.gpgpu_util.bindVertexProgramAttributeStreams(
+        gpgpu.gl, oldProgram, gpgpu.vertexBuffer);
   }
 }
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-export function createQInterpolatorProgram(gpgpu: tf.webgl.GPGPUContext):
+export function createQInterpolatorProgram(gpgpu: webgl.GPGPUContext):
     WebGLProgram {
   const fragmentShaderSource = `#version 300 es
     precision highp float;
@@ -259,7 +259,7 @@ export function createQInterpolatorProgram(gpgpu: tf.webgl.GPGPUContext):
 }
 
 export function executeQInterpolatorProgram(
-    gpgpu: tf.webgl.GPGPUContext, program: WebGLProgram, splatTex: WebGLTexture,
+    gpgpu: webgl.GPGPUContext, program: WebGLProgram, splatTex: WebGLTexture,
     embeddingTex: WebGLTexture, numPoints: number, minX: number, minY: number,
     maxX: number, maxY: number, pntsPerRow: number, numRows: number,
     targetTex?: WebGLTexture) {
@@ -267,38 +267,38 @@ export function executeQInterpolatorProgram(
   if (targetTex != null) {
     gpgpu.setOutputMatrixTexture(targetTex, numRows, pntsPerRow);
   } else {
-    tf.webgl.webgl_util.bindCanvasToFramebuffer(gpgpu.gl, false);
+    webgl.webgl_util.bindCanvasToFramebuffer(gpgpu.gl);
   }
 
   gpgpu.setProgram(program);
 
   const embeddingLocation =
-      tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-          gl, false, program, 'embedding_tex');
+      webgl.webgl_util.getProgramUniformLocationOrThrow(
+          gl, program, 'embedding_tex');
   gpgpu.setInputMatrixTexture(embeddingTex, embeddingLocation, 0);
 
-  const splatLocation = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'splat_tex');
+  const splatLocation = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'splat_tex');
   gpgpu.setInputMatrixTexture(splatTex, splatLocation, 1);
 
-  const pntsPerRowLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'points_per_row');
+  const pntsPerRowLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'points_per_row');
   gl.uniform1f(pntsPerRowLoc, pntsPerRow);
 
-  const numRowsLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'num_rows');
+  const numRowsLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'num_rows');
   gl.uniform1f(numRowsLoc, numRows);
 
-  const numPointsLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'num_points');
+  const numPointsLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'num_points');
   gl.uniform1f(numPointsLoc, numPoints);
 
   const minLoc =
-      tf.webgl.webgl_util.getProgramUniformLocationOrThrow(gl, false, program, 'minV');
+      webgl.webgl_util.getProgramUniformLocationOrThrow(gl, program, 'minV');
   gl.uniform2f(minLoc, minX, minY);
 
   const maxLoc =
-      tf.webgl.webgl_util.getProgramUniformLocationOrThrow(gl, false, program, 'maxV');
+      webgl.webgl_util.getProgramUniformLocationOrThrow(gl, program, 'maxV');
   gl.uniform2f(maxLoc, maxX, maxY);
 
   gpgpu.executeProgram();
@@ -307,7 +307,7 @@ export function executeQInterpolatorProgram(
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-export function createXYInterpolatorProgram(gpgpu: tf.webgl.GPGPUContext):
+export function createXYInterpolatorProgram(gpgpu: webgl.GPGPUContext):
     WebGLProgram {
   const fragmentShaderSource = `#version 300 es
     precision highp float;
@@ -358,7 +358,7 @@ export function createXYInterpolatorProgram(gpgpu: tf.webgl.GPGPUContext):
 }
 
 export function executeXYInterpolatorProgram(
-    gpgpu: tf.webgl.GPGPUContext, program: WebGLProgram, splatTex: WebGLTexture,
+    gpgpu: webgl.GPGPUContext, program: WebGLProgram, splatTex: WebGLTexture,
     embeddingTex: WebGLTexture, targetTex: WebGLTexture, numPoints: number,
     minX: number, minY: number, maxX: number, maxY: number, pntsPerRow: number,
     numRows: number, eta: number) {
@@ -366,38 +366,38 @@ export function executeXYInterpolatorProgram(
   if (targetTex != null) {
     gpgpu.setOutputMatrixTexture(targetTex, numRows, pntsPerRow * 2);
   } else {
-    tf.webgl.webgl_util.bindCanvasToFramebuffer(gpgpu.gl, false);
+    webgl.webgl_util.bindCanvasToFramebuffer(gpgpu.gl);
   }
 
   gpgpu.setProgram(program);
 
   const embeddingLocation =
-      tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-          gl, false, program, 'embedding_tex');
+      webgl.webgl_util.getProgramUniformLocationOrThrow(
+          gl, program, 'embedding_tex');
   gpgpu.setInputMatrixTexture(embeddingTex, embeddingLocation, 0);
 
-  const splatLocation = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'splat_tex');
+  const splatLocation = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'splat_tex');
   gpgpu.setInputMatrixTexture(splatTex, splatLocation, 1);
 
-  const pntsPerRowLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'points_per_row');
+  const pntsPerRowLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'points_per_row');
   gl.uniform1f(pntsPerRowLoc, pntsPerRow);
 
-  const numRowsLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'num_rows');
+  const numRowsLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'num_rows');
   gl.uniform1f(numRowsLoc, numRows);
 
-  const numPointsLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'num_points');
+  const numPointsLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'num_points');
   gl.uniform1f(numPointsLoc, numPoints);
 
   const minLoc =
-      tf.webgl.webgl_util.getProgramUniformLocationOrThrow(gl, false, program, 'minV');
+      webgl.webgl_util.getProgramUniformLocationOrThrow(gl, program, 'minV');
   gl.uniform2f(minLoc, minX, minY);
 
   const maxLoc =
-      tf.webgl.webgl_util.getProgramUniformLocationOrThrow(gl, false, program, 'maxV');
+      webgl.webgl_util.getProgramUniformLocationOrThrow(gl, program, 'maxV');
   gl.uniform2f(maxLoc, maxX, maxY);
 
   gpgpu.executeProgram();
@@ -407,7 +407,7 @@ export function executeXYInterpolatorProgram(
 ///////////////////////////////////////////////////////////
 
 export function createAttractiveForcesComputationProgram(
-    gpgpu: tf.webgl.GPGPUContext): WebGLProgram {
+    gpgpu: webgl.GPGPUContext): WebGLProgram {
   const fragmentShaderSource = `#version 300 es
     precision highp float;
 
@@ -531,7 +531,7 @@ export function createAttractiveForcesComputationProgram(
 }
 
 export function executeAttractiveForcesComputationProgram(
-    gpgpu: tf.webgl.GPGPUContext, program: WebGLProgram,
+    gpgpu: webgl.GPGPUContext, program: WebGLProgram,
     embeddingTex: WebGLTexture, offsetTex: WebGLTexture,
     neighIdTex: WebGLTexture,  // Float for now...
     // better to use an integer texture
@@ -542,43 +542,43 @@ export function executeAttractiveForcesComputationProgram(
   if (targetTex != null) {
     gpgpu.setOutputMatrixTexture(targetTex, numRows, pntsPerRow * 2);
   } else {
-    tf.webgl.webgl_util.bindCanvasToFramebuffer(gpgpu.gl, false);
+    webgl.webgl_util.bindCanvasToFramebuffer(gpgpu.gl);
   }
 
   gpgpu.setProgram(program);
 
   const embeddingLocation =
-      tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-          gl, false, program, 'embedding_tex');
+      webgl.webgl_util.getProgramUniformLocationOrThrow(
+          gl, program, 'embedding_tex');
   gpgpu.setInputMatrixTexture(embeddingTex, embeddingLocation, 3);
 
-  const offsetLocation = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'offset_tex');
+  const offsetLocation = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'offset_tex');
   gpgpu.setInputMatrixTexture(offsetTex, offsetLocation, 2);
 
-  const neighIdLocation = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'neigh_id_tex');
+  const neighIdLocation = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'neigh_id_tex');
   gpgpu.setInputMatrixTexture(neighIdTex, neighIdLocation, 1);
 
   const neighProbLocation =
-      tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-          gl, false, program, 'neigh_prob_tex');
+      webgl.webgl_util.getProgramUniformLocationOrThrow(
+          gl, program, 'neigh_prob_tex');
   gpgpu.setInputMatrixTexture(neighProbTex, neighProbLocation, 0);
 
-  const numRowsLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'num_rows');
+  const numRowsLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'num_rows');
   gl.uniform1f(numRowsLoc, numRows);
 
-  const neighsPerRowLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'num_neighs_per_row');
+  const neighsPerRowLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'num_neighs_per_row');
   gl.uniform1f(neighsPerRowLoc, neighsPerRow);
 
-  const numPointsLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'num_points');
+  const numPointsLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'num_points');
   gl.uniform1f(numPointsLoc, numPoints);
 
-  const pntsPerRowLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'points_per_row');
+  const pntsPerRowLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'points_per_row');
   gl.uniform1f(pntsPerRowLoc, pntsPerRow);
 
   gpgpu.executeProgram();
@@ -588,7 +588,7 @@ export function executeAttractiveForcesComputationProgram(
 ///////////////////////////////////////////////////////////
 
 export function createEmbeddingInitializationProgram(
-    gpgpu: tf.webgl.GPGPUContext): WebGLProgram {
+    gpgpu: webgl.GPGPUContext): WebGLProgram {
   const fragmentShaderSource = `#version 300 es
     precision highp float;
 
@@ -635,32 +635,32 @@ export function createEmbeddingInitializationProgram(
 }
 
 export function executeEmbeddingInitializationProgram(
-    gpgpu: tf.webgl.GPGPUContext, program: WebGLProgram,
+    gpgpu: webgl.GPGPUContext, program: WebGLProgram,
     randomTex: WebGLTexture, numPoints: number, pntsPerRow: number,
     numRows: number, targetTex?: WebGLTexture) {
   const gl = gpgpu.gl;
   if (targetTex != null) {
     gpgpu.setOutputMatrixTexture(targetTex, numRows, pntsPerRow * 2);
   } else {
-    tf.webgl.webgl_util.bindCanvasToFramebuffer(gpgpu.gl, false);
+    webgl.webgl_util.bindCanvasToFramebuffer(gpgpu.gl);
   }
 
   gpgpu.setProgram(program);
 
-  const randomLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'random_tex');
+  const randomLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'random_tex');
   gpgpu.setInputMatrixTexture(randomTex, randomLoc, 3);
 
-  const numRowsLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'num_rows');
+  const numRowsLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'num_rows');
   gl.uniform1f(numRowsLoc, numRows);
 
-  const numPointsLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'num_points');
+  const numPointsLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'num_points');
   gl.uniform1f(numPointsLoc, numPoints);
 
-  const pntsPerRowLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-      gl, false, program, 'points_per_row');
+  const pntsPerRowLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+      gl, program, 'points_per_row');
   gl.uniform1f(pntsPerRowLoc, pntsPerRow);
 
   gpgpu.executeProgram();
@@ -670,7 +670,7 @@ export function executeEmbeddingInitializationProgram(
 ///////////////////////////////////////////////////////////
 
 export function createDistributionParametersComputationProgram(
-    gpgpu: tf.webgl.GPGPUContext): WebGLProgram {
+    gpgpu: webgl.GPGPUContext): WebGLProgram {
   const fragmentShaderSource = `#version 300 es
     precision highp float;
 
@@ -770,7 +770,7 @@ export function createDistributionParametersComputationProgram(
 }
 
 export function executeDistributionParametersComputationProgram(
-    gpgpu: tf.webgl.GPGPUContext, program: WebGLProgram, knnGraph: WebGLTexture,
+    gpgpu: webgl.GPGPUContext, program: WebGLProgram, knnGraph: WebGLTexture,
     numPoints: number, numNeighs: number, pntsPerRow: number, numRows: number,
     perplexity: number, targetTex?: WebGLTexture) {
   const gl = gpgpu.gl;
@@ -778,33 +778,33 @@ export function executeDistributionParametersComputationProgram(
     if (targetTex != null) {
       gpgpu.setOutputMatrixTexture(targetTex, numRows, pntsPerRow);
     } else {
-      tf.webgl.webgl_util.bindCanvasToFramebuffer(gpgpu.gl, false);
+      webgl.webgl_util.bindCanvasToFramebuffer(gpgpu.gl);
     }
 
     gpgpu.setProgram(program);
 
-    const knnGraphLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-        gl, false, program, 'knn_graph_tex');
+    const knnGraphLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+        gl, program, 'knn_graph_tex');
     gpgpu.setInputMatrixTexture(knnGraph, knnGraphLoc, 0);
 
-    const numRowsLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-        gl, false, program, 'num_rows');
+    const numRowsLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+        gl, program, 'num_rows');
     gl.uniform1f(numRowsLoc, numRows);
 
-    const numPointsLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-        gl, false, program, 'num_points');
+    const numPointsLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+        gl, program, 'num_points');
     gl.uniform1f(numPointsLoc, numPoints);
 
-    const pntsPerRowLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-        gl, false, program, 'points_per_row');
+    const pntsPerRowLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+        gl, program, 'points_per_row');
     gl.uniform1f(pntsPerRowLoc, pntsPerRow);
 
-    const numNeighsLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-        gl, false, program, 'num_neighs');
+    const numNeighsLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+        gl, program, 'num_neighs');
     gl.uniform1f(numNeighsLoc, numNeighs);
 
-    const perplexityLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-        gl, false, program, 'perplexity');
+    const perplexityLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+        gl, program, 'perplexity');
     // TODO PASS AS A PARAMETER
     gl.uniform1f(perplexityLoc, perplexity);
 
@@ -819,7 +819,7 @@ export function executeDistributionParametersComputationProgram(
 ///////////////////////////////////////////////////////////
 
 export function createGaussiaDistributionsFromDistancesProgram(
-    gpgpu: tf.webgl.GPGPUContext): WebGLProgram {
+    gpgpu: webgl.GPGPUContext): WebGLProgram {
   const fragmentShaderSource = `#version 300 es
     precision highp float;
     uniform sampler2D knn_graph_tex;
@@ -867,7 +867,7 @@ export function createGaussiaDistributionsFromDistancesProgram(
 }
 
 export function executeGaussiaDistributionsFromDistancesProgram(
-    gpgpu: tf.webgl.GPGPUContext, program: WebGLProgram, knnGraph: WebGLTexture,
+    gpgpu: webgl.GPGPUContext, program: WebGLProgram, knnGraph: WebGLTexture,
     parameters: WebGLTexture, numPoints: number, numNeighs: number,
     pntsPerRow: number, numRows: number, targetTex?: WebGLTexture) {
   const gl = gpgpu.gl;
@@ -875,33 +875,33 @@ export function executeGaussiaDistributionsFromDistancesProgram(
     if (targetTex != null) {
       gpgpu.setOutputMatrixTexture(targetTex, numRows, pntsPerRow * numNeighs);
     } else {
-      tf.webgl.webgl_util.bindCanvasToFramebuffer(gpgpu.gl, false);
+      webgl.webgl_util.bindCanvasToFramebuffer(gpgpu.gl);
     }
 
     gpgpu.setProgram(program);
 
-    const knnGraphLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-        gl, false, program, 'knn_graph_tex');
+    const knnGraphLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+        gl, program, 'knn_graph_tex');
     gpgpu.setInputMatrixTexture(knnGraph, knnGraphLoc, 0);
 
-    const parametersLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-        gl, false, program, 'parameters_tex');
+    const parametersLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+        gl, program, 'parameters_tex');
     gpgpu.setInputMatrixTexture(parameters, parametersLoc, 1);
 
-    const numRowsLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-        gl, false, program, 'num_rows');
+    const numRowsLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+        gl, program, 'num_rows');
     gl.uniform1f(numRowsLoc, numRows);
 
-    const numPointsLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-        gl, false, program, 'num_points');
+    const numPointsLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+        gl, program, 'num_points');
     gl.uniform1f(numPointsLoc, numPoints);
 
-    const pntsPerRowLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-        gl, false, program, 'points_per_row');
+    const pntsPerRowLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+        gl, program, 'points_per_row');
     gl.uniform1f(pntsPerRowLoc, pntsPerRow);
 
-    const numNeighsLoc = tf.webgl.webgl_util.getProgramUniformLocationOrThrow(
-        gl, false, program, 'num_neighs');
+    const numNeighsLoc = webgl.webgl_util.getProgramUniformLocationOrThrow(
+        gl, program, 'num_neighs');
     gl.uniform1f(numNeighsLoc, numNeighs);
 
     console.log('Execute Gaussion Dist from Distances');

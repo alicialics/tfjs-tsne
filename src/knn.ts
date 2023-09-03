@@ -16,6 +16,7 @@
  */
 
 import * as tf from '@tensorflow/tfjs-core';
+import * as webgl from '@tensorflow/tfjs-backend-webgl';
 
 import * as dataset_util from './dataset_util';
 import * as gl_util from './gl_util';
@@ -40,8 +41,8 @@ function instanceOfCustomDataDefinition(object: any):
 
 export class KNNEstimator {
   private verbose: boolean;
-  private backend: tf.webgl.MathBackendWebGL;
-  private gpgpu: tf.webgl.GPGPUContext;
+  private backend: webgl.MathBackendWebGL;
+  private gpgpu: webgl.GPGPUContext;
 
   private _iteration: number;
   private numNeighs: number;
@@ -74,7 +75,7 @@ export class KNNEstimator {
       verbose = false;
     }
     // Saving the GPGPU context
-    this.backend = tf.findBackend('webgl') as tf.webgl.MathBackendWebGL;
+    this.backend = tf.findBackend('webgl') as webgl.MathBackendWebGL;
     this.gpgpu = this.backend.getGPGPUContext();
 
     this._iteration = 0;
@@ -179,8 +180,8 @@ export class KNNEstimator {
       }
     }
     this.log('knn Create static vertex start');
-    this.linesVertexIdBuffer = tf.webgl.webgl_util.createStaticVertexBuffer(
-        this.gpgpu.gl, false, linesVertexId);
+    this.linesVertexIdBuffer = webgl.webgl_util.createStaticVertexBuffer(
+        this.gpgpu.gl, linesVertexId);
     this.log('knn Create programs/buffers done');
   }
 

@@ -16,6 +16,7 @@
  */
 
 import * as tf from '@tensorflow/tfjs-core';
+import * as webgl from '@tensorflow/tfjs-backend-webgl';
 import * as gl_util from './gl_util';
 import {RearrangedData} from './interfaces';
 
@@ -33,7 +34,7 @@ export async function tensorToDataTexture(tensor: tf.Tensor):
   }
 
   // Getting the context for initializing the texture
-  const backend = tf.findBackend('webgl') as tf.webgl.MathBackendWebGL;
+  const backend = tf.findBackend('webgl') as webgl.MathBackendWebGL;
   if (backend === null) {
     throw Error('WebGL backend is not available');
   }

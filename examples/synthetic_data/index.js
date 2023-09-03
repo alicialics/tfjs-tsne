@@ -16,6 +16,7 @@
  */
 
 import * as tf from '@tensorflow/tfjs-core';
+import '@tensorflow/tfjs-backend-webgl';
 import * as d3 from 'd3';
 
 import * as tsne from '../../src/index';
